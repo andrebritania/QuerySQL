@@ -2,10 +2,9 @@ WITH GWM_FILTRADO AS (
     SELECT *
     FROM [STAGE].[gfe].[GWM] WITH (NOLOCK)
     WHERE 
-        GWM_CCFRET = '23210'
+        GWM_CCFRET = '23121'
         AND GWM_DTEMIS BETWEEN '2020-06-01' AND '2025-06-30'
-        AND GWM_SERDC IN ('5','21')
-        AND GWM_TPDOC = '2'
+       
 ),
 GWM_AGREGADO AS (
     SELECT 
@@ -141,7 +140,5 @@ LEFT JOIN dw..Dim_Emitente t WITH (NOLOCK)
 LEFT JOIN [tot].[Transporte] tr WITH (NOLOCK)
     ON t.Cgc = tr.Cgc
 WHERE 
-    G.CentroCusto = '23210'
-    AND G.SerieNF IN ('5','21')
+    G.CentroCusto = '23121'
     AND G6.GW6_DTFIN BETWEEN '2025-06-01' AND '2025-06-30'
-    and NumeroNF='1322049'
