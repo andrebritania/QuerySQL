@@ -1,0 +1,18 @@
+SELECT TOP (1000) 
+      [GWM_CDTRP]
+      ,[GWM_SERDOC]
+      ,[GWM_NRDOC]
+      ,[GWM_DTEMIS]
+      ,[GWM_CDTPDC]
+      ,[GWM_EMISDC]
+      ,[GWM_SERDC]
+      ,[GWM_NRDC]
+      ,[GWM_SEQGW8]
+      ,[GWM_ITEM]    
+      ,[GWM_CTFRET]
+      ,[GWM_CCFRET]
+      ,[GWM_VLFRE1]
+      ,[GWM_DTEMDC]
+  FROM [STAGE].[gfe].[GWM]
+  where GWM_CCFRET='23121'
+  and GWM_DTEMDC > '20250101'
