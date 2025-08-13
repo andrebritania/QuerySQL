@@ -2,18 +2,19 @@ WITH FaturamentoDetalhado AS (
     SELECT 
         f.[SerieNotaFiscal],
         f.[NumeroNotaFiscal],
+        f.NomeMatrizTransportador AS TransportadoraRomaneio,
         f.[CidadeDestino],
         f.[EstadoDestino],
         f.[VlFretePago],
         f.[TotalNota],
         f.[DataEmissaoNotaFiscal],
         f.[PesoBruto],
-        f.[NomeMatrizTransportador],
-        f.[DataEnvioFinanceiro],
+        f.[DataEnvioFinanceiro],        
         CASE 
             WHEN ne.[qt-volumes] IS NULL OR ne.[qt-volumes] = 0 THEN 'COMPLEMENTO'
             ELSE 'MASTER'
         END AS TipoNota,
+
         nf.[cdd-embarq],
         gw4.[GW4_NRDF] AS NumCTE,
         gw3.[GW3_VLDF] AS ValorCTE,
@@ -21,6 +22,9 @@ WITH FaturamentoDetalhado AS (
         gw3.[GW3_EMIFAT] AS EmpresaFatura,
         FORMAT(CONVERT(DATE, gw3.[GW3_DTEMFA]), 'dd/MM/yyyy') AS DataFatura,
         gw3.[GW3_PESOR] AS PesoReal,
+        gw3.[GW3_EMISDF] AS CodigoEmissor,
+        gw3.[GW3_EMIFAT] AS CodigoCentroFaturamento,       
+        emit.NomeAbrev AS TransportadoraFatura,
         CASE 
             WHEN nf.[cdd-embarq] IS NOT NULL AND nf.[cdd-embarq] <> 0 THEN 
                 (SELECT COUNT(*) 
@@ -46,20 +50,22 @@ WITH FaturamentoDetalhado AS (
        AND gw4.GW4_SERDF  = gw3.GW3_SERDF
        AND gw4.GW4_NRDF   = gw3.GW3_NRDF
        AND gw4.GW4_DTEMIS = gw3.GW3_DTEMIS
-    WHERE f.[CodigoFrete] = '23210'
-      AND f.[DataEmissaoNotaFiscal] BETWEEN '2024-01-01' AND '2024-12-31'      
-)
+    LEFT JOIN [DW].[dbo].[Dim_Emitente] emit
+        ON emit.[CodEmitente] = gw3.[GW3_EMIFAT]
 
+    WHERE f.[CodigoFrete] = '23210'
+      AND f.[DataEmissaoNotaFiscal] BETWEEN '2025-01-01' AND '2025-12-31'      
+)
 SELECT 
     SerieNotaFiscal,
     NumeroNotaFiscal,
+    TransportadoraRomaneio,
     CidadeDestino,
     EstadoDestino,
     VlFretePago,
     TotalNota,
     DataEmissaoNotaFiscal,
     PesoBruto,
-    NomeMatrizTransportador,
     DataEnvioFinanceiro,
     TipoNota,
     [cdd-embarq],
@@ -67,8 +73,8 @@ SELECT
     ValorCTE,
     NumFatura,
     EmpresaFatura,
-    DataFatura,
-    PesoReal
+    TransportadoraFatura,
+    DataFatura
 FROM FaturamentoDetalhado
 WHERE [NF/Embarque] > 1
 ORDER BY NumeroNotaFiscal ASC;

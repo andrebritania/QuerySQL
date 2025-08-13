@@ -1,5 +1,4 @@
-SELECT TOP (1000) 
-      [GWM_CDTRP]
+SELECT [GWM_CDTRP]
       ,[GWM_SERDOC]
       ,[GWM_NRDOC]
       ,[GWM_DTEMIS]
@@ -15,4 +14,4 @@ SELECT TOP (1000)
       ,[GWM_DTEMDC]
   FROM [STAGE].[gfe].[GWM]
   where GWM_CCFRET='23121'
-  and GWM_DTEMDC > '20250101'
+  AND GWM_DTEMDC > '20250101'
