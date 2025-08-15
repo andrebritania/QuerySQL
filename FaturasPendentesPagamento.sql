@@ -19,6 +19,7 @@ WITH FaturamentoDetalhado AS (
         gw3.[GW3_NRDF] AS NumCTE,
         gw3.[GW3_VLDF] AS ValorCTE,
         gw3.[GW3_NRFAT] AS NumFatura,
+        GW6.GW6_VLFATU AS ValorFatura,
         gw3.[GW3_EMIFAT] AS EmpresaFatura,
         FORMAT(CONVERT(DATE, gw3.[GW3_DTEMFA]), 'dd/MM/yyyy') AS DataFatura,
         gw3.[GW3_PESOR] AS PesoReal,
@@ -42,13 +43,22 @@ WITH FaturamentoDetalhado AS (
        AND f.[SerieNotaFiscal] = gw4.[GW4_SERDC]
     LEFT JOIN [gfe].[gw3] gw3
         ON gw4.EMPRESA    = gw3.EMPRESA
+        AND GW4.GW4_TPDC='NFS'
        AND gw4.GW4_FILIAL = gw3.GW3_FILIAL
        AND gw4.GW4_EMISDF = gw3.GW3_EMISDF
        AND gw4.GW4_SERDF  = gw3.GW3_SERDF
        AND gw4.GW4_NRDF   = gw3.GW3_NRDF
        AND gw4.GW4_DTEMIS = gw3.GW3_DTEMIS
+       AND GW4.GW4_TPDC='NFS'
+    LEFT JOIN [STAGE].[gfe].[GW6]
+      ON GW3.EMPRESA     = GW6.EMPRESA
+     AND GW3.GW3_FILIAL  = GW6.GW6_FILIAL
+     AND GW3.GW3_EMIFAT  = GW6.GW6_EMIFAT
+     AND GW3.GW3_SERFAT  = GW6.GW6_SERFAT
+     AND GW3.GW3_NRFAT   = GW6.GW6_NRFAT
+     AND GW3.GW3_DTEMFA  = GW6.GW6_DTEMIS
     WHERE f.[CodigoFrete] = '23210'
-      AND f.[DataEmissaoNotaFiscal] BETWEEN '2025-01-01' AND '2025-08-08'
+      AND f.[DataEmissaoNotaFiscal] BETWEEN '2025-01-01' AND GETDATE ()
 )
 SELECT 
     SerieNotaFiscal,
@@ -66,10 +76,12 @@ SELECT
     NumCTE,
     ValorCTE,
     NumFatura,
+    ValorFatura,
     EmpresaFatura,
     DataFatura,
     PesoReal
 FROM FaturamentoDetalhado
 WHERE DataEnvioFinanceiro IS NULL
-AND NumFatura IS not NULL
+AND NumFatura IS NOT NULL AND NumFatura <> ''
+AND SerieNotaFiscal in ('5','21')
 ORDER BY NumeroNotaFiscal ASC
