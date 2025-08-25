@@ -1,0 +1,11 @@
+SELECT 
+    GWM_NRDC AS NotaFiscal,
+    GWM_SERDC SerieNotaFiscal,
+    SUM(GWM_VLFRE1) AS Frete_Cobrado
+  
+   
+FROM [STAGE].[gfe].[GWM]
+WHERE GWM_NRDC = '1019205'
+  AND GWM_SERDC = '5'
+  AND GWM_TPDOC = '2'
+GROUP BY GWM_NRDC, GWM_SERDC, GWM_TPDOC;
