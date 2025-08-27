@@ -48,9 +48,10 @@ WITH FaturamentoDetalhado AS (
        AND gw4.GW4_NRDF   = gw3.GW3_NRDF
        AND gw4.GW4_DTEMIS = gw3.GW3_DTEMIS
     WHERE f.[CodigoFrete] = '23210'
-      AND f.[DataEmissaoNotaFiscal] BETWEEN '2025-01-01' AND '2025-08-08'
+      AND SerieNotaFiscal IN ('5','21')
+      AND f.[DataEmissaoNotaFiscal] BETWEEN '2025-01-01' AND GETDATE()
 )
-SELECT 
+SELECT
     SerieNotaFiscal,
     NumeroNotaFiscal,
     CidadeDestino,
@@ -72,4 +73,4 @@ SELECT
 FROM FaturamentoDetalhado
 WHERE DataEnvioFinanceiro IS NULL
 AND NumFatura IS NULL
-ORDER BY NumeroNotaFiscal ASC
+ORDER BY DataEmissaoNotaFiscal ASC

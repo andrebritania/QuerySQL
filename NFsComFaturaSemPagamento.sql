@@ -20,6 +20,7 @@ WITH FaturamentoDetalhado AS (
         gw3.[GW3_VLDF] AS ValorCTE,
         gw3.[GW3_NRFAT] AS NumFatura,
         gw3.[GW3_EMIFAT] AS EmpresaFatura,
+     
         FORMAT(CONVERT(DATE, gw3.[GW3_DTEMFA]), 'dd/MM/yyyy') AS DataFatura,
         gw3.[GW3_PESOR] AS PesoCTE,
         CASE 
@@ -29,7 +30,6 @@ WITH FaturamentoDetalhado AS (
                  WHERE nf2.[cdd-embarq] = nf.[cdd-embarq])
             ELSE NULL
         END AS [NF/Embarque]
-
     FROM [DW].[auditoria].[Fato_CustosFrete_Faturamento] f
     LEFT JOIN [stage].[tot].[NotaEmbal] ne
         ON f.[NumeroNotaFiscal] = ne.[nr-nota-fis]
@@ -50,7 +50,7 @@ WITH FaturamentoDetalhado AS (
     WHERE f.[CodigoFrete] = '23210'
       AND f.[DataEmissaoNotaFiscal] BETWEEN '2025-01-01' AND GETDATE()
 )
-SELECT 
+SELECT DISTINCT
     SerieNotaFiscal,
     NumeroNotaFiscal,
     CidadeDestino,
@@ -71,5 +71,5 @@ SELECT
     PesoCTE
 FROM FaturamentoDetalhado
 WHERE DataEnvioFinanceiro IS NULL
-AND (NumFatura IS not NULL AND NumFatura <> '')
-ORDER BY NumeroNotaFiscal ASC
+  AND (NumFatura IS NOT NULL AND NumFatura <> '')
+ORDER BY NumCTE ASC
