@@ -1,0 +1,34 @@
+DECLARE @DataInicioGW6 DATE = '2025-08-01';
+DECLARE @DataInicioGW3 DATE = '2025-07-01';
+WITH FaturasFiltradas AS (
+    SELECT *
+    FROM [STAGE].[gfe].[GW6]
+    WHERE GW6_DTEMIS > @DataInicioGW6
+),
+Comparacao AS (
+    SELECT
+        GW6.EMPRESA,
+        GW6.GW6_EMIFAT,
+        GW6.GW6_SERFAT,
+        GW6.GW6_NRFAT,
+        MAX(GW6.GW6_VLFATU) AS VLFATU,
+        SUM(GW3.GW3_VLDF)   AS SOMA_VLDF
+    FROM FaturasFiltradas GW6
+    LEFT JOIN [STAGE].[gfe].[GW3] GW3
+        ON  GW6.EMPRESA     = GW3.EMPRESA
+        AND GW6.GW6_EMIFAT  = GW3.GW3_EMIFAT
+        AND GW6.GW6_SERFAT  = GW3.GW3_SERFAT
+        AND GW6.GW6_NRFAT   = GW3.GW3_NRFAT
+    GROUP BY
+        GW6.EMPRESA,
+        GW6.GW6_EMIFAT,
+        GW6.GW6_SERFAT,
+        GW6.GW6_NRFAT
+)
+SELECT *,
+       CASE 
+           WHEN ROUND(VLFATU, 2) = ROUND(SOMA_VLDF, 2) THEN 'OK'
+           ELSE 'DIVERGENTE'
+       END AS STATUS
+FROM Comparacao
+WHERE ROUND(VLFATU, 2) <> ROUND(SOMA_VLDF, 2);
