@@ -1,6 +1,5 @@
-DECLARE @RangeStart DATETIME = '2025-01-01';
+DECLARE @RangeStart DATETIME = '2025-08-01';
 DECLARE @RangeEnd DATETIME = GETDATE();
-
 
 DECLARE @Capitais TABLE (Cidade VARCHAR(50));
 INSERT INTO @Capitais (Cidade) VALUES 
@@ -16,8 +15,7 @@ WITH DadosLimpos AS (
         ff.SerieNotaFiscal,
         ff.DataEmissaoNotaFiscal,
         nf.[dt-saida] AS DataSaida,  
-        ff.DataEntregaCliente,
-        
+        ff.DataEntregaCliente,       
         ff.DataProgEntrega,
         UPPER(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ff.Cidade, 
             'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u'), 
@@ -65,7 +63,7 @@ WITH DadosLimpos AS (
         ff.TipoFrete, pdb.NumeroOS, acf.ObservacaoCarga, acf.Ocorrencia, ff.DataEntregaCliente, acf.PesoBruto
 )
 
-SELECT  
+SELECT DISTINCT
     NumeroNotaFiscal,
     SerieNotaFiscal,
     PesoBruto,
@@ -81,10 +79,10 @@ SELECT
     NumeroPedido,
     TipoFrete,
     NumeroOS,
-    Total_Item,
-    Total_Pecas_Fat,
-    Total_Pecas_Dev,
-    Total_OS,
+    FORMAT(Total_Item, 'N0', 'pt-BR') AS Total_Item,
+    FORMAT(Total_Pecas_Fat, 'N0', 'pt-BR') AS Total_Pecas_Fat,
+    FORMAT(Total_Pecas_Dev, 'N0', 'pt-BR') AS Total_Pecas_Dev,
+    FORMAT(Total_OS, 'N0', 'pt-BR') AS Total_OS,
     TotalNota,
     ObservacaoCarga,
     Ocorrencia,
@@ -92,7 +90,7 @@ SELECT
         WHEN Total_Pecas_Fat = Total_Pecas_Dev THEN 'Total'  
         WHEN Total_Pecas_Dev > 0 AND Total_Pecas_Dev < Total_Pecas_Fat THEN 'Parcial'  
         WHEN Total_Pecas_Dev = 0 THEN 'Sem Devolução'  
-    END AS StatusDevolução,
+    END AS StatusDevolucao,
     CASE  
         WHEN CidadeSemAcentos IN (SELECT Cidade FROM @Capitais) THEN 'CAPITAL ' + Estado  
         ELSE 'INTERIOR ' + Estado  
@@ -107,3 +105,4 @@ SELECT
         ELSE 'NOS' 
     END AS StatusOS
 FROM DadosLimpos
+where DataEntregaCliente is null
