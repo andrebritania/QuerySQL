@@ -19,15 +19,16 @@ WITH GW6_Filtrada AS (
         GW6_MOTMLA,
         GW6_USUIMP
     FROM [STAGE].[gfe].[GW6]
-    WHERE GW6_DTEMIS > '2025-01-01'
-)
+    WHERE GW6_DTEMIS > '2024-12-01'
+),
 EmitentesFiltrados AS (
     SELECT CodEmitente, NomeMatriz
     FROM [DW].[dbo].[Dim_Emitente]
     WHERE CodEmitente IN (SELECT DISTINCT GW6_EMIFAT FROM GW6_Filtrada)
+)
 SELECT
-    gw6.GW6_EMIFAT AS CodEmissorFatura,
-    DE.NomeMatriz AS TranspFatura,
+    GW6.GW6_EMIFAT AS CodEmissorFatura,
+    DE.NomeMatriz AS TranspFatur,
     GW6.GW6_SERFAT AS SerieFatura,
     GW6.GW6_NRFAT AS NumeroFatura,
     GW6.GW6_DTEMIS AS DataEmissaoFatura,
@@ -82,3 +83,4 @@ LEFT JOIN [STAGE].[gfe].[GWM] GWM
    AND GW3.GW3_SERDF   = GWM.GWM_SERDOC
    AND GW3.GW3_NRDF    = GWM.GWM_NRDOC
    AND GW3.GW3_EMISDF  = GWM.GWM_CDTRP
+  WHERE GWM_NRDC='1328020';

@@ -33,5 +33,7 @@ SELECT [IdEstab]
       ,[DataEnvioFinanceiro]
   FROM [DW].[auditoria].[Fato_CustosFrete_Faturamento]
   where SerieNotaFiscal in ('5','21')
-  and DataEmissaoNotaFiscal > '2025-08-01'
+  and DataEmissaoNotaFiscal >= '2025-06-01' AND 
+    DataEmissaoNotaFiscal < '2025-08-01'
   and IdEstab='8'
+  and NomeMatrizTransportador like '%Correi%'
