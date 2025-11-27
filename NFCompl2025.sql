@@ -69,8 +69,8 @@ WITH FaturamentoDetalhado AS (
        AND gw4.GW4_NRDF   = gw3.GW3_NRDF
        AND gw4.GW4_DTEMIS = gw3.GW3_DTEMIS
     WHERE f.[CodigoFrete] = '23210'
-      AND f.[DataEmissaoNotaFiscal] BETWEEN '2025-01-01' AND GETDATE()  
-      AND NumeroNotaFiscal in ('1434439','1434327')
+      AND f.[DataEmissaoNotaFiscal] BETWEEN '2025-11-20' AND GETDATE()  
+      and (ne.[qt-volumes] IS NULL OR ne.[qt-volumes] = 0)
       AND SerieNotaFiscal='5'
 )
 SELECT *
