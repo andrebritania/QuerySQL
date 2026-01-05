@@ -47,9 +47,15 @@ WITH FaturamentoDetalhado AS (
        AND gw4.GW4_SERDF  = gw3.GW3_SERDF
        AND gw4.GW4_NRDF   = gw3.GW3_NRDF
        AND gw4.GW4_DTEMIS = gw3.GW3_DTEMIS
-    WHERE f.[CodigoFrete] = '23210'
-      AND SerieNotaFiscal IN ('5','21')
-      AND f.[DataEmissaoNotaFiscal] BETWEEN '2025-01-01' AND GETDATE()
+WHERE f.[CodigoFrete] = '23210'
+  AND SerieNotaFiscal IN ('5','21')
+  AND f.[DataEmissaoNotaFiscal] BETWEEN '2025-01-01' AND GETDATE()
+  AND (
+    f.[NomeMatrizTransportador] NOT LIKE 'Corre%'
+    AND f.[NomeMatrizTransportador] NOT LIKE 'J.J.%'
+)
+
+     
 )
 SELECT
     SerieNotaFiscal,
@@ -73,4 +79,5 @@ SELECT
 FROM FaturamentoDetalhado
 WHERE DataEnvioFinanceiro IS NULL
 AND NumFatura IS NULL
+AND TipoNota='MASTER'
 ORDER BY DataEmissaoNotaFiscal ASC

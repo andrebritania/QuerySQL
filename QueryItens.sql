@@ -108,7 +108,7 @@ WHERE F.[IdEstab] = 8
   AND F.[SerieNotaFiscal] IN (5, 21)
   AND F.[DataEmissaoNotaFiscal] BETWEEN '2025-10-01' AND GETDATE()
 
-  AND F.[SituacaoNota] = 'Faturada'
+  
  
   AND F.[IdDataCancelamento] IS NULL
   AND nrclc.D_E_L_E_T_ = ''
