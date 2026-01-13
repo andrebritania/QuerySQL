@@ -3,7 +3,7 @@ SELECT  F.[SerieNotaFiscal],
     F.[DataEmissaoNotaFiscal],
     NE.[qt-volumes] AS QtVolumes,
     ITNF.[it-codigo],
-    ITNF.[qtFaturada],
+    CAST(ITNF.[qtFaturada] AS INT) AS qtFaturada,
     I.[DescItem],
     I.[CodFamiliaComl],
 
@@ -106,7 +106,7 @@ LEFT JOIN STAGE.gfe.GV6 GV6
     AND gwgchv.GWG_CDEMIT = GV6.GV6_CDEMIT
 WHERE F.[IdEstab] = 8
   AND F.[SerieNotaFiscal] IN (5, 21)
-  AND F.[DataEmissaoNotaFiscal] BETWEEN '2025-10-01' AND GETDATE()
+  AND F.[DataEmissaoNotaFiscal] BETWEEN '2025-12-01' AND GETDATE()
 
   
  
